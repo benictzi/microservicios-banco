@@ -1,0 +1,96 @@
+version: "3.8"
+services:
+  h2bd:
+    image: oscarfonts/h2
+    networks:
+      banco_net: 
+        ipv4_address: 172.16.238.12
+    volumes:
+      - ./bd:/opt/h2-data
+    ports:
+      - "1521:1521"
+      - "81:81"
+    environment:
+      - "H2_OPTIONS=-ifNotExists"
+  
+  servidor_configuracion:
+    build:
+      context: ./servidor-configuracion
+      dockerfile: Dockerfile
+    environment:
+      - "SPRING_PROFILES_ACTIVE=jdbc,dev"
+    networks: 
+      banco_net:
+        ipv4_address: 172.16.238.8
+    depends_on: 
+      - h2bd
+    ports:
+      - "9099:9099"
+  
+  servicio_cuenta:
+    build:
+      context: ./servicio-cuenta
+      dockerfile: Dockerfile
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    networks: 
+      banco_net:
+        ipv4_address: 172.16.238.2
+    depends_on:
+      - h2bd
+      - servidor_eureka
+      - servidor_configuracion
+    ports:
+      - "9092:9092"
+
+  servicio_cliente:
+    build:
+      context: ./servicio-cliente
+      dockerfile: Dockerfile
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    networks: 
+      banco_net:
+        ipv4_address: 172.16.238.3
+    depends_on:
+      - h2bd
+      - servidor_configuracion
+      - servidor_eureka
+      - servicio_cuenta
+    ports:
+      - "9093:9093"
+
+  servidor_eureka:
+    build:
+      context: ./servidor-eureka
+      dockerfile: Dockerfile
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    networks:
+      banco_net:
+        ipv4_address: 172.16.238.27  
+    ports:
+      - "9050:9050"
+
+  servidor_zuul:
+    build: 
+      context: ./servidor-zuul
+      dockerfile: Dockerfile
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    networks:
+      banco_net:
+        ipv4_address: 172.16.238.35  
+    depends_on: 
+      - servidor_eureka
+    ports:
+      - "9027:9027"
+
+
+    
+networks:
+  banco_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24

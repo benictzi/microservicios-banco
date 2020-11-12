@@ -1,0 +1,19 @@
+eureka:
+  client:
+    initial-instance-info-replication-interval-seconds: 5
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: http://172.16.238.27:9050/eureka/
+      
+zuul:
+  ignored-headers:
+  - Access-Control-Allow-Credentials
+  - Access-Control-Allow-Origin
+  sensitive-headers:
+  - Cookie
+  - Set-Cookie
+  routes:
+    servicio-cliente:
+      path: /**
+      service-id: servicio-cliente
+      strip-prefix: true

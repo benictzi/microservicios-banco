@@ -1,0 +1,1 @@
+cd ./servicio-cliente && gradle build && cd ./../servicio-cuenta && gradle build && cd ./../servidor-configuracion && gradle build && cd ./../servidor-eureka && gradle build && cd ./../servidor-zuul && gradle build && cd ./../

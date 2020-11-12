@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://172.16.238.12:1521/banco
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  cloud:
+    config:
+      server:
+        jdbc:
+          sql: SELECT KEY, VALUE FROM PROPERTIES WHERE APPLICATION = ? AND PROFILE = ? AND LABEL = ?
+          enabled: true
+      
+  

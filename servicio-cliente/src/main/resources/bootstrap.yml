@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    config:
+      uri:
+      - http://172.16.238.8:9099
+      label: default
+      fail-fast: true
+  application:
+    name: servicio-cliente

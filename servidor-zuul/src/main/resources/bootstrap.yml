@@ -1,0 +1,7 @@
+server:
+  port: 9027
+  servlet:    context-path: /gft-bank
+
+spring:
+  application:
+    name: servidor-zuul
